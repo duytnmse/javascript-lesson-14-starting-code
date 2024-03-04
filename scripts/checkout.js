@@ -2,19 +2,21 @@ import { cart, RemoveFromCart } from "../data/cart.js";
 import { products } from "../data/products.js";
 import { formatCurrency } from "./utils/money.js";
 
-const RenderCart = () => {
-  let cartSummaryHTML = "";
-  cart.forEach((cartItem) => {
-    const productId = cartItem.productId;
-    let matchingProduct;
-    products.forEach((product) => {
-      if (productId === product.id) {
-        matchingProduct = product;
-      }
-    });
-    // console.log(matchingProduct);
-    cartSummaryHTML += `
-    <div class="cart-item-container">
+//Render default cart
+let cartSummaryHTML = "";
+cart.forEach((cartItem) => {
+  const productId = cartItem.productId;
+  let matchingProduct;
+  products.forEach((product) => {
+    if (productId === product.id) {
+      matchingProduct = product;
+    }
+  });
+  // console.log(matchingProduct);
+  cartSummaryHTML += `
+    <div class="cart-item-container js-cart-item-container-${
+      matchingProduct.id
+    }">
     <div class="delivery-date">Delivery date: Tuesday, June 21</div>
   
     <div class="cart-item-details-grid">
@@ -87,14 +89,12 @@ const RenderCart = () => {
     </div>
   </div>
     `;
-  });
-  document.querySelector(".js-order-summary").innerHTML = cartSummaryHTML;
-  deleteProduct();
-  console.log(cart.length);
-};
-RenderCart();
+});
+document.querySelector(".js-order-summary").innerHTML = cartSummaryHTML;
+addEventdeleteProduct();
+
 //Handle delete link
-function deleteProduct() {
+function addEventdeleteProduct() {
   let deleteLinks = document.querySelectorAll(".js-delete-link");
   deleteLinks.forEach((deleteLink) => {
     deleteLink.addEventListener("click", () => {
@@ -106,7 +106,11 @@ function deleteProduct() {
       //   }
       // });
       RemoveFromCart(deletedProductId);
-      RenderCart();
+      // RenderCart();
+      const container = document.querySelector(
+        `.js-cart-item-container-${deletedProductId}`
+      );
+      container.remove();
     });
   });
 }
