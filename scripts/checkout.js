@@ -1,4 +1,4 @@
-import { cart } from "../data/cart.js";
+import { cart, RemoveFromCart } from "../data/cart.js";
 import { products } from "../data/products.js";
 import { formatCurrency } from "./utils/money.js";
 
@@ -97,14 +97,15 @@ RenderCart();
 function deleteProduct() {
   let deleteLinks = document.querySelectorAll(".js-delete-link");
   deleteLinks.forEach((deleteLink) => {
-    deleteLink.addEventListener("click", (event) => {
+    deleteLink.addEventListener("click", () => {
       //Handle function
-      const deletedProductId = event.target.dataset.productId;
-      cart.forEach((item, index) => {
-        if (item.productId === deletedProductId) {
-          cart.splice(index, 1);
-        }
-      });
+      const deletedProductId = deleteLink.dataset.productId;
+      // cart.forEach((item, index) => {
+      //   if (item.productId === deletedProductId) {
+      //     cart.splice(index, 1);
+      //   }
+      // });
+      RemoveFromCart(deletedProductId);
       RenderCart();
     });
   });
