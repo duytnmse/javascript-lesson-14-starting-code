@@ -51,3 +51,12 @@ export const RemoveFromCart = (productId) => {
   cart = newCart;
   SaveToLocalStorage();
 };
+
+export const updateDeliveryOption = (newProductId, newDeliveryOptionId) => {
+  cart.forEach((cartItem) => {
+    if (cartItem.productId === newProductId) {
+      cartItem.deliveryOptionId = newDeliveryOptionId;
+      SaveToLocalStorage();
+    }
+  });
+};

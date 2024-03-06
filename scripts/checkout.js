@@ -1,4 +1,4 @@
-import { cart, RemoveFromCart } from "../data/cart.js";
+import { cart, RemoveFromCart, updateDeliveryOption } from "../data/cart.js";
 import { deliveryOptions } from "../data/deliveryOptions.js";
 import { products } from "../data/products.js";
 import { formatCurrency } from "./utils/money.js";
@@ -64,7 +64,7 @@ document.querySelector(".js-order-summary").innerHTML = cartSummaryHTML;
 addEventdeleteProduct();
 
 //Handle delete link
-function addEventdeleteProduct(matchingProduct) {
+function addEventdeleteProduct() {
   let deleteLinks = document.querySelectorAll(".js-delete-link");
   deleteLinks.forEach((deleteLink) => {
     deleteLink.addEventListener("click", () => {
@@ -88,7 +88,6 @@ function addEventdeleteProduct(matchingProduct) {
 function deliveryOptionsHTML(matchingProduct, cartItem) {
   let html = "";
   const today = dayjs();
-  let deliveryOptionsHTML = "";
   deliveryOptions.forEach((deliveryOption) => {
     let isChecked = false;
     if (deliveryOption.id === cartItem.deliveryOptionId) {
@@ -101,7 +100,9 @@ function deliveryOptionsHTML(matchingProduct, cartItem) {
         ? "FREE Shipping"
         : "$" + formatCurrency(deliveryOption.priceCents) + " - Shipping";
     html += `
-    <div class="delivery-option">
+    <div class="delivery-option js-delivery-option" data-product-id="${
+      matchingProduct.id
+    }" data-delivery-id="${deliveryOption.id}">
     <input
       type="radio"
       ${isChecked ? "checked" : ""}
@@ -116,6 +117,18 @@ function deliveryOptionsHTML(matchingProduct, cartItem) {
   </div>
     `;
   });
-
   return html;
 }
+
+//add onclick for opt
+document.querySelectorAll(".js-delivery-option").forEach((element) => {
+  element.addEventListener("click", () => {
+    // const { productId, deliveryOptionId } = element.dataset;
+    const productId = element.dataset.productId;
+    const deliveryOptionId = element.dataset.deliveryId;
+    console.log(productId);
+    console.log(deliveryOptionId);
+
+    updateDeliveryOption(productId, deliveryOptionId);
+  });
+});
