@@ -10,6 +10,9 @@ import { renderPaymentSummary } from "./paymentSummary.js";
 
 //Render default cart
 export function renderOrderSummary() {
+  //render items number title
+  document.querySelector(".js-return-to-home-link").innerHTML =
+    cart.length + " items";
   let cartSummaryHTML = "";
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
@@ -75,6 +78,7 @@ export function renderOrderSummary() {
   //add eventlistener
   addEventdeleteProduct();
   addEventDeliveryOption();
+  renderPaymentSummary();
 }
 //Handle delete link
 function addEventdeleteProduct() {
@@ -88,7 +92,7 @@ function addEventdeleteProduct() {
         `.js-cart-item-container-${deletedProductId}`
       );
       container.remove();
-      renderPaymentSummary();
+      renderOrderSummary();
     });
   });
 }
@@ -134,7 +138,6 @@ function addEventDeliveryOption() {
       const { productId, deliveryId } = element.dataset;
       updateDeliveryOption(productId, deliveryId);
       renderOrderSummary();
-      renderPaymentSummary();
     });
   });
 }
