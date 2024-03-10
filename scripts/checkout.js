@@ -1,25 +1,32 @@
 import { cart, RemoveFromCart, updateDeliveryOption } from "../data/cart.js";
-import { deliveryOptions } from "../data/deliveryOptions.js";
+import { deliveryOptions, getDeliveryDays } from "../data/deliveryOptions.js";
 import { products } from "../data/products.js";
 import { formatCurrency } from "./utils/money.js";
 import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
 
 //Render default cart
-let cartSummaryHTML = "";
-cart.forEach((cartItem) => {
-  const productId = cartItem.productId;
-  let matchingProduct;
-  products.forEach((product) => {
-    if (productId === product.id) {
-      matchingProduct = product;
-    }
-  });
-  // console.log(matchingProduct);
-  cartSummaryHTML += `
+function renderOrderSummary() {
+  let cartSummaryHTML = "";
+  cart.forEach((cartItem) => {
+    const productId = cartItem.productId;
+    let matchingProduct;
+    products.forEach((product) => {
+      if (productId === product.id) {
+        matchingProduct = product;
+      }
+    });
+    //Handle delivery-date-title
+    let today = dayjs();
+    let deliveryDateString = "";
+    deliveryDateString = today.add(getDeliveryDays(productId), "days");
+    //Generate HTML item in cart
+    cartSummaryHTML += `
     <div class="cart-item-container js-cart-item-container-${
       matchingProduct.id
     }">
-    <div class="delivery-date">Delivery date: Tuesday, June 21</div>
+    <div class="delivery-date js-delivery-date-${
+      matchingProduct.id
+    }">Delivery date: ${deliveryDateString.format("dddd, MMM YY")}</div>
   
     <div class="cart-item-details-grid">
       <img
@@ -59,10 +66,12 @@ cart.forEach((cartItem) => {
     </div>
   </div>
     `;
-});
-document.querySelector(".js-order-summary").innerHTML = cartSummaryHTML;
-addEventdeleteProduct();
-
+  });
+  document.querySelector(".js-order-summary").innerHTML = cartSummaryHTML;
+  //add eventlistener
+  addEventdeleteProduct();
+  addEventDeliveryOption();
+}
 //Handle delete link
 function addEventdeleteProduct() {
   let deleteLinks = document.querySelectorAll(".js-delete-link");
@@ -119,16 +128,15 @@ function deliveryOptionsHTML(matchingProduct, cartItem) {
   });
   return html;
 }
-
-//add onclick for opt
-document.querySelectorAll(".js-delivery-option").forEach((element) => {
-  element.addEventListener("click", () => {
-    // const { productId, deliveryOptionId } = element.dataset;
-    const productId = element.dataset.productId;
-    const deliveryOptionId = element.dataset.deliveryId;
-    console.log(productId);
-    console.log(deliveryOptionId);
-
-    updateDeliveryOption(productId, deliveryOptionId);
+//Handle onclick for Delivery option
+function addEventDeliveryOption() {
+  document.querySelectorAll(".js-delivery-option").forEach((element) => {
+    element.addEventListener("click", () => {
+      const { productId, deliveryId } = element.dataset;
+      updateDeliveryOption(productId, deliveryId);
+      renderOrderSummary();
+    });
   });
-});
+}
+
+renderOrderSummary();
