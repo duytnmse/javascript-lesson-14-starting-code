@@ -33,3 +33,19 @@ export const getDeliveryDays = (productId) => {
   });
   return days;
 };
+
+export const getDeliveryPriceCents = (productId) => {
+  let priceCents = 0;
+  let matchingItem = "";
+  cart.forEach((item) => {
+    if (productId === item.productId) {
+      matchingItem = item;
+    }
+  });
+  deliveryOptions.forEach((deliveryOption) => {
+    if (matchingItem.deliveryOptionId === deliveryOption.id) {
+      priceCents = deliveryOption.priceCents;
+    }
+  });
+  return priceCents;
+};
