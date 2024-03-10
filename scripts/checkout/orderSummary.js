@@ -6,6 +6,7 @@ import {
 import { products } from "../../data/products.js";
 import { formatCurrency } from "../utils/money.js";
 import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
+import { renderPaymentSummary } from "./paymentSummary.js";
 
 //Render default cart
 export function renderOrderSummary() {
@@ -82,17 +83,12 @@ function addEventdeleteProduct() {
     deleteLink.addEventListener("click", () => {
       //Handle function
       const deletedProductId = deleteLink.dataset.productId;
-      // cart.forEach((item, index) => {
-      //   if (item.productId === deletedProductId) {
-      //     cart.splice(index, 1);
-      //   }
-      // });
       RemoveFromCart(deletedProductId);
-      // RenderCart();
       const container = document.querySelector(
         `.js-cart-item-container-${deletedProductId}`
       );
       container.remove();
+      renderPaymentSummary();
     });
   });
 }
@@ -138,6 +134,7 @@ function addEventDeliveryOption() {
       const { productId, deliveryId } = element.dataset;
       updateDeliveryOption(productId, deliveryId);
       renderOrderSummary();
+      renderPaymentSummary();
     });
   });
 }
