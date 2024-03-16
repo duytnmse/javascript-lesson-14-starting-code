@@ -41,6 +41,9 @@ export function renderPaymentSummary() {
 </div>
     `;
   document.querySelector(".js-payment-summary").innerHTML = paymentSummaryHTML;
+  //   if (paymentSummary) {
+  //     paymentSummary.innerHTML = paymentSummaryHTML;
+  //   }
 }
 
 //Total items'price
